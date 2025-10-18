@@ -20,7 +20,7 @@ public class main {
                 if (scan_file.hasNextInt()) {
                     data.add(scan_file.nextInt());
                 } else {
-                    scan_file.next(); // skip non-integer tokens
+                    scan_file.next();
                 }
             }
         } catch (Exception e) {
@@ -42,3 +42,4 @@ public class main {
     }
 
 }
+
