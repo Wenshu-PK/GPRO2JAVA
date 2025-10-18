@@ -3,13 +3,14 @@ package GPRO2JAVA;
 import java.io.*;
 import java.util.*;
 
-/**
- *
- * @author sawan
- */
 public class main {
 
     protected config configDetail;
+    //protected ArrayList<Warehouse> warehouses = new ArrayList<>();
+    //protected ArrayList<Freight> freights = new ArrayList<>();
+    //protected ArrayList<SupplierThread> suppliers = new ArrayList<>();
+   // protected ArrayList<FactoryThread> factories = new ArrayList<>();
+
 
     public void runSimulaion() {
         ArrayList<Integer> data = new ArrayList<>();
@@ -29,6 +30,9 @@ public class main {
        configDetail = new config(data);
        
        
+       //create thread
+       //run thread
+       //print final
        
        
        
@@ -42,4 +46,3 @@ public class main {
     }
 
 }
-
