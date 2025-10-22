@@ -20,9 +20,12 @@ public class FactoryThread extends Thread{
     private ArrayList<WareHouse> warehouses;
     private ArrayList<Freight> freights;
     private int days;
-    public FactoryThread(String n, int d, int max, ArrayList<WareHouse> w, ArrayList<Freight> f)   {super(n); days = d; maxProduction = max; warehouses = w; freights = f;}
-    public void setMonitor(MyMonitor m)   {monitor = m;}
+    public FactoryThread(String n, int d, int max)   {super(n); days = d; maxProduction = max;  }
+    public void setMonitorS(MyMonitor m)   {monitorS = m;}
+    public void setMonitorM(MyMonitor m)    {monitorM = m;}
     public void setBarrier(CyclicBarrier ba)    {barrier = ba;}
+    public void setWarehouses(ArrayList<WareHouse> w)   {warehouses = w;}
+    public void setFreights(ArrayList<Freight> f)   {freights = f;}
     @Override
     public void run()
     {
