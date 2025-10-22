@@ -6,8 +6,9 @@ package Project2;
 
 /**
  *
- * @author keanotebook
+ * @author puvit
  */
 public class SupplierThread {
     
 }
+
