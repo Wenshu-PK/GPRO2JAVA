@@ -1,0 +1,217 @@
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+// SimulationConfig.java
+class SimulationConfig {
+    public int days;
+    public int warehouseNum;
+    public int freightNum;
+    public int freightMaxCapacity;
+    public int supplierNum;
+    public int supplierMinSupply;
+    public int supplierMaxSupply;
+    public int factoryNum;
+    public int factoryMaxProduction;
+}
+
+ต้องการ : ****************************// Warehouse.java
+ class Warehouse {
+    private final String name;
+    private int balance = 0;
+
+    public Warehouse(String name) {
+        this.name = name;
+    }
+
+    public synchronized void put(int amount) {
+        balance += amount;
+    }
+
+    public synchronized int get(int maxNeeded) {
+        int taken = Math.min(maxNeeded, balance);
+        balance -= taken;
+        return taken;
+    }
+
+    public synchronized int getBalance() {
+        return balance;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+****************************************************************************************************************
+
+ต้องการ : *************// DaySynchronizer.java
+
+class DaySynchronizer {
+    private final CyclicBarrier barrierStart;
+    private final CyclicBarrier barrierAfterSuppliers;
+    private final CyclicBarrier barrierAfterShipping;
+
+    public DaySynchronizer(int totalThreadsPlusMain) {
+        barrierStart = new CyclicBarrier(totalThreadsPlusMain);
+        barrierAfterSuppliers = new CyclicBarrier(totalThreadsPlusMain);
+        barrierAfterShipping = new CyclicBarrier(totalThreadsPlusMain);
+    }
+
+    public void awaitStart() throws InterruptedException, BrokenBarrierException {
+        barrierStart.await();
+    }
+
+    public void awaitAfterSuppliers() throws InterruptedException, BrokenBarrierException {
+        barrierAfterSuppliers.await();
+    }
+
+    public void awaitAfterShipping() throws InterruptedException, BrokenBarrierException {
+        barrierAfterShipping.await();
+    }
+}********************
+
+////////////////////////////////////// louis /////////////////////////////////////////////////////
+***************// SupplierThread.java
+
+ class SupplierThread extends Thread {
+    private final List<Warehouse> warehouses;
+    private final int minSupply;
+    private final int maxSupply;
+    private final int days;
+    private final DaySynchronizer sync;
+    private final Random rng = new Random();
+
+    public SupplierThread(String name, List<Warehouse> warehouses,
+                          int minSupply, int maxSupply, int days, DaySynchronizer sync) {
+        super(name);
+        this.warehouses = warehouses;
+        this.minSupply = minSupply;
+        this.maxSupply = maxSupply;
+        this.days = days;
+        this.sync = sync;
+    }
+
+    @Override
+    public void run() {
+        for (int day = 1; day <= days; day++) {
+            try {
+                sync.awaitStart();
+
+                int amount = minSupply + rng.nextInt(maxSupply - minSupply + 1);
+                Warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
+                w.put(amount);
+                System.out.printf("%s >> put %d materials\t %s balance = %d%n",
+                        getName(), amount, w.getName(), w.getBalance());
+
+                sync.awaitAfterSuppliers();
+                sync.awaitAfterShipping();
+            } catch (Exception e) {
+                System.out.printf("%s >> interrupted/broken at day %d%n", getName(), day);
+                return;
+            }
+        }
+    }
+}*******************
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//main
+public class main {
+  private static SimulationConfig readConfig(File configFile) throws IOException {
+        SimulationConfig cfg = new SimulationConfig();
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(configFile))) {
+            String l;
+            while ((l = br.readLine()) != null) {
+                if (!l.trim().isEmpty()) lines.add(l.trim());
+            }
+        }
+        if (lines.size() < 5) throw new IOException("Config file must have 5 lines.");
+
+        for (String line : lines) {
+            String[] t = line.split(",");
+            for (int i = 0; i < t.length; i++) t[i] = t[i].trim();
+            String key = t[0].toLowerCase();
+            if (key.startsWith("days")) cfg.days = Integer.parseInt(t[1]);
+            else if (key.startsWith("warehouse_num")) cfg.warehouseNum = Integer.parseInt(t[1]);
+            else if (key.startsWith("freight_num")) {
+                cfg.freightNum = Integer.parseInt(t[1]);
+                cfg.freightMaxCapacity = Integer.parseInt(t[2]);
+            }
+            else if (key.startsWith("supplier_num_min_max")) {
+                cfg.supplierNum = Integer.parseInt(t[1]);
+                cfg.supplierMinSupply = Integer.parseInt(t[2]);
+                cfg.supplierMaxSupply = Integer.parseInt(t[3]);
+            }
+            else if (key.startsWith("factory_num")) {
+                cfg.factoryNum = Integer.parseInt(t[1]);
+                cfg.factoryMaxProduction = Integer.parseInt(t[2]);
+            }
+        }
+        return cfg;
+    }
+  public static void main(String[] args) {
+        String configPath = args.length > 0 ? args[0] : "src/main/Java/Project2/config.txt";
+        File cfgFile = new File(configPath);
+
+        SimulationConfig cfg;
+        try {
+            cfg = readConfig(cfgFile);
+        } catch (Exception e) {
+            System.err.println("Error reading config: " + e.getMessage());
+            return;
+        }
+
+ต้องการ : ************List<Warehouse> warehouses = new ArrayList<>();
+        for (int i = 0; i < cfg.warehouseNum; i++)
+            warehouses.add(new Warehouse("Warehouse_" + i));
+**************************************************************************************************************
+
+        List<Freight> freights = new ArrayList<>();
+        for (int i = 0; i < cfg.freightNum; i++)
+            freights.add(new Freight("Freight_" + i, cfg.freightMaxCapacity));
+
+
+วิธีเรียกใช้ : ************** DaySynchronizer sync = new DaySynchronizer(cfg.supplierNum + cfg.factoryNum + 1);
+
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < cfg.supplierNum; i++) {
+            Thread s = new SupplierThread("Supplier_" + i, warehouses,
+                    cfg.supplierMinSupply, cfg.supplierMaxSupply, cfg.days, sync);
+            threads.add(s);
+            s.start();
+        }
+**************************************************************************************************************************
+
+        List<FactoryThread> factories = new ArrayList<>();
+        for (int i = 0; i < cfg.factoryNum; i++) {
+            FactoryThread f = new FactoryThread("Factory_" + i, warehouses, freights,
+                    cfg.factoryMaxProduction, cfg.days, sync);
+            factories.add(f);
+            f.start();
+        }
+
+วิธีเรียกใช้ : *****************for (int day = 1; day <= cfg.days; day++) {
+            System.out.printf("%n=== DAY %d ===%n", day);
+            for (Freight f : freights) f.reset();
+
+            try {
+                sync.awaitStart();
+                sync.awaitAfterSuppliers();
+                sync.awaitAfterShipping();
+            } catch (Exception e) {
+                System.err.println("Main interrupted.");
+                break;
+            }
+        }
+*************************************************************************************************************************
+
+        for (Thread t : threads) try { t.join(); } catch (InterruptedException ignored) {}
+        for (Thread t : factories) try { t.join(); } catch (InterruptedException ignored) {}
+
+        System.out.println("\n=== SUMMARY ===");
+        for (FactoryThread f : factories) {
+            System.out.printf("%s total = %d shipped = %d%n",
+                    f.getName(), f.getTotalCreated(), f.getTotalShipped());
+        }
+    }
+}
