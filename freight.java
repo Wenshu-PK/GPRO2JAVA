@@ -1,13 +1,13 @@
-package Project2_6713249;
+package GPRO2JAVA;
 
 
-public class Freight {
+public class freight {
     private final int freight_num;
     private final int freight_cap;
     private int freight_rem;
     
     //construct
-    public Freight(int num, int cap){
+    public freight(int num, int cap){
         this.freight_num = num;
         this.freight_cap = cap;
         this.freight_rem = cap;
@@ -17,12 +17,7 @@ public class Freight {
     public synchronized int ship(int request){
         if (request <= 0)
             return 0;
-        int shipped;
-        if (request <= freight_rem){
-        shipped = request;
-        }else{
-            shipped = freight_rem;
-        }
+        int shipped = Math.min(request, freight_rem);
         freight_rem -= shipped;
         return shipped;
     }
