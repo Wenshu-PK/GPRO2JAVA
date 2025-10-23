@@ -78,8 +78,8 @@ public class FactoryThread extends Thread{
     }
     public void shippingProduct(int s)
     {
-        int remain = freights.get(s).ship(totalProducts);
-        int shipped = totalProducts - remain;
+        int shipped = freights.get(s).ship(totalProducts);
+        int remain = totalProducts - shipped;
         allShipped += shipped;
         System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).getRemaining());
         unshipped = remain;
@@ -89,3 +89,4 @@ public class FactoryThread extends Thread{
         System.out.printf("%s  >>  unshipped products = %5d\n", Thread.currentThread().getName(), unshipped);
     }
 }
+
