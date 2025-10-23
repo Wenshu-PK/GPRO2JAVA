@@ -2,6 +2,7 @@ package GPRO2JAVA;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class main {
 
@@ -17,9 +18,9 @@ public class main {
         monitorM = new MyMonitor();
         ArrayList<Integer> data = new ArrayList<>();
         String path = "src/main/java/GPRO2JAVA/";
-   Scanner sc = new Scanner(System.in);
-   System.out.println("New file name =");
-   String file = sc.nextLine().trim();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("New file name =");
+        String file = sc.nextLine().trim();
  
       
 
@@ -67,27 +68,35 @@ public class main {
                     configDetail.getSupplier()[1], configDetail.getSupplier()[2], configDetail.getDay(), monitorS, monitorM);
             a.setMonitorS(monitorS);
             a.setMonitorM(monitorM);
-            a.start();
+            
             suppliers.add(a);
 
         }
+        CyclicBarrier barrierS = new CyclicBarrier(suppliers.size());
         for(int i = 0; i < suppliers.size(); i++)
         {
+            suppliers.get(i).setBarrier(barrierS);
             suppliers.get(i).setMonitorS(monitorS);
             suppliers.get(i).setMonitorM(monitorS);
+            suppliers.get(i).start();
         }
         for (int i = 0; i < configDetail.getFactory()[0]; i++) {
 
             FactoryThread a = new FactoryThread("FactoryThread_" + i, configDetail.getDay(), configDetail.getFactory()[1], monitorS, monitorM);
             a.setMonitorS(monitorS);
             a.setMonitorM(monitorM);
-            a.start();
+            
             factories.add(a);
         }
+        CyclicBarrier barrierF = new CyclicBarrier(factories.size());
         for(int i = 0; i < factories.size(); i++)
         {
+            factories.get(i).setBarrier(barrierF);
             factories.get(i).setMonitorS(monitorS);
             factories.get(i).setMonitorM(monitorS);
+            factories.get(i).setWarehouses(warehouses);
+            factories.get(i).setFreights(freights);
+            factories.get(i).start();
         }
         for (int j = 0; j < configDetail.getDay(); j++) {
 
