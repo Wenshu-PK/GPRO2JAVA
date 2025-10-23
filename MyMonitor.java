@@ -10,7 +10,7 @@ package Project2;
  */
 public class MyMonitor {
     
-     public synchronized void waitForInput()
+     public synchronized void waitForThreads()
     {
             try{wait();} catch(Exception e){}
     }

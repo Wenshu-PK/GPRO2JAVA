@@ -20,6 +20,8 @@ public class FactoryThread extends Thread{
     private ArrayList<WareHouse> warehouses;
     private ArrayList<Freight> freights;
     private int days;
+    private int allProduced;
+    private int allShipped;
     public FactoryThread(String n, int d, int max)   {super(n); days = d; maxProduction = max;  }
     public void setMonitorS(MyMonitor m)   {monitorS = m;}
     public void setMonitorM(MyMonitor m)    {monitorM = m;}
@@ -30,13 +32,14 @@ public class FactoryThread extends Thread{
     public void run()
     {
         while(true){
-            monitorS.waitForInput();
+            monitorS.waitForThreads();
             Random rand = new Random();
             int selectw = rand.nextInt(0, warehouses.size()-1);
             int selectf = rand.nextInt(0, freights.size()-1);
             products = rand.nextInt(1, maxProduction);
             products = warehouses.get(selectw).get(products);
             getMats(selectw);
+            allProduced += products;
             int c =-1;
             try{c = barrier.await();}catch(Exception e){}
             if(c==0)
@@ -57,6 +60,7 @@ public class FactoryThread extends Thread{
                 monitorM.wakeUpThreads();
             }
             if(days == 1){
+                monitorM.waitForThreads();
                 break;
             }
         }
@@ -77,8 +81,9 @@ public class FactoryThread extends Thread{
     }
     public void shippingProduct(int s)
     {
-        int remain = freights.get(s).put(totalProducts);
+        int remain = freights.get(s).ship(totalProducts);
         int shipped = totalProducts - remain;
+        allShipped += shipped;
         System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).get());
         unshipped = remain;
     }
