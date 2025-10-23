@@ -1,9 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package GPRO2JAVA;
+
 import java.util.*;
+
 /**
  *
  * @author sawan
@@ -17,10 +16,11 @@ public class config {
     private int supplier_num;
     private int supplier_num_min;
     private int supplier_num_max;
+    private int factory_num;
     private int factory_num_max;
 
-   public config(ArrayList<Integer> data) {
-        if (data.size() < 8) {
+    public config(ArrayList<Integer> data) {
+        if (data.size() != 9) {
             throw new IllegalArgumentException("Config data must have at least 8 integers");
         }
 
@@ -31,7 +31,9 @@ public class config {
         this.supplier_num = data.get(4);
         this.supplier_num_min = data.get(5);
         this.supplier_num_max = data.get(6);
-        this.factory_num_max = data.get(7);
+        this.factory_num = data.get(7);
+        this.factory_num_max = data.get(8);
+
     }
 
     public int getDay() {
@@ -45,17 +47,22 @@ public class config {
     }
 
     public int[] getFreight() {
-        int[] freightDetail = new int[]{this.freight_num, this.freight_num_max};
+        int[] freightDetail = new int[] { this.freight_num, this.freight_num_max };
         return freightDetail;
 
     }
 
     public int[] getSupplier() {
-        int[] supplierDetail = new int[]{this.supplier_num, this.supplier_num_min, this.supplier_num_max};
+        int[] supplierDetail = new int[] { this.supplier_num, this.supplier_num_min, this.supplier_num_max };
         return supplierDetail;
     }
 
-    public int getFactory() {
-        return this.factory_num_max;
+    public int[] getFactory() {
+         int[] factoryDetail = new int[] {this.factory_num,this.factory_num_max};
+        return factoryDetail;
+    }
+
+    public int getNumThread() {
+        return this.factory_num + this.supplier_num;
     }
 }
