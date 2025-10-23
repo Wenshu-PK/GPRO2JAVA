@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package Project2;
+
+package GPRO2JAVA;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -17,8 +14,8 @@ public class FactoryThread extends Thread{
     private MyMonitor monitorS, monitorM;
     private int totalProducts;
     private int unshipped;
-    private ArrayList<WareHouse> warehouses;
-    private ArrayList<Freight> freights;
+    private ArrayList<warehouse> warehouses;
+    private ArrayList<freight> freights;
     private int days;
     private int allProduced;
     private int allShipped;
@@ -26,8 +23,8 @@ public class FactoryThread extends Thread{
     public void setMonitorS(MyMonitor m)   {monitorS = m;}
     public void setMonitorM(MyMonitor m)    {monitorM = m;}
     public void setBarrier(CyclicBarrier ba)    {barrier = ba;}
-    public void setWarehouses(ArrayList<WareHouse> w)   {warehouses = w;}
-    public void setFreights(ArrayList<Freight> f)   {freights = f;}
+    public void setWarehouses(ArrayList<warehouse> w)   {warehouses = w;}
+    public void setFreights(ArrayList<freight> f)   {freights = f;}
     @Override
     public void run()
     {
@@ -73,7 +70,7 @@ public class FactoryThread extends Thread{
     }
     public void getMats(int s)
     {
-        System.out.printf("%s  >>  get %3d materials      %s balance = %5d\n",Thread.currentThread().getName(), products, warehouses.get(s).getName(), warehouses.get(s).get());
+        System.out.printf("%s  >>  get %3d materials      %s balance = %5d\n",Thread.currentThread().getName(), products, warehouses.get(s).getName(), warehouses.get(s).getBalance());
     }
     public void totalToShip()
     {
@@ -84,7 +81,7 @@ public class FactoryThread extends Thread{
         int remain = freights.get(s).ship(totalProducts);
         int shipped = totalProducts - remain;
         allShipped += shipped;
-        System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).get());
+        System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).getRemaining());
         unshipped = remain;
     }
     public void unshippedProducts()
