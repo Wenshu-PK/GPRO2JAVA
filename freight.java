@@ -1,4 +1,4 @@
-package Project2;
+package Project2_6713249;
 
 
 public class Freight {
@@ -17,7 +17,12 @@ public class Freight {
     public synchronized int ship(int request){
         if (request <= 0)
             return 0;
-        int shipped = Math.min(request, freight_rem);
+        int shipped;
+        if (request <= freight_rem){
+        shipped = request;
+        }else{
+            shipped = freight_rem;
+        }
         freight_rem -= shipped;
         return shipped;
     }
