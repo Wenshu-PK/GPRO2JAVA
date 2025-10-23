@@ -1,3 +1,5 @@
+package GPRO2JAVA;
+
 import java.util.*;
 
 /**
@@ -11,11 +13,11 @@ import java.util.*;
  * NOTE: put/get do not print anything to avoid duplicate prints;
  *       caller threads (SupplierThread / FactoryThread) should print.
  */
-public class Warehouse {
+public class warehouse {
     private final String name;
     private int balance = 0;
 
-    public Warehouse(String name) {
+    public warehouse(String name) {
         this.name = name;
     }
 
