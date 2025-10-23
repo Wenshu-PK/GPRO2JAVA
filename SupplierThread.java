@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package GPRO2JAVA;
 
 import java.util.*;
@@ -13,7 +10,7 @@ import java.util.concurrent.*;
  * @author puvit
  */
 public class SupplierThread extends Thread {
-    private ArrayList<Warehouse> warehouses;
+    private ArrayList<warehouse> warehouses;
     private int minSupply;
     private int maxSupply;
     private int days;
@@ -26,7 +23,7 @@ public class SupplierThread extends Thread {
     
     
 
-    public SupplierThread(String name, ArrayList<Warehouse> warehouses,
+    public SupplierThread(String name, ArrayList<warehouse> warehouses,
                           int minSupply, int maxSupply, int days ) {
         super(name);
         this.warehouses = warehouses;
@@ -43,7 +40,7 @@ public class SupplierThread extends Thread {
                 monitorM.waitForThreads();
 //
                 int amount = minSupply + rng.nextInt(maxSupply - minSupply + 1);
-                Warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
+                warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
                 w.put(amount);
                 System.out.printf("%s >> put %d materials\t %s balance = %d%n",
                         getName(), amount, w.getName(), w.getBalance());
@@ -61,4 +58,3 @@ public class SupplierThread extends Thread {
         }
     }
 }
-
