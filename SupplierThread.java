@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Project2;
+package GPRO2JAVA;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 
 /**
@@ -12,37 +13,47 @@ import java.util.*;
  * @author puvit
  */
 public class SupplierThread extends Thread {
-    private final List<Warehouse> warehouses;
-    private final int minSupply;
-    private final int maxSupply;
-    private final int days;
-    private final DaySynchronizer sync;
-    private final Random rng = new Random();
+    private ArrayList<Warehouse> warehouses;
+    private int minSupply;
+    private int maxSupply;
+    private int days;
+    private CyclicBarrier barrier;
+    private MyMonitor monitorS, monitorM;
+    private Random rng = new Random();
+    public void setMonitorS(MyMonitor m)   {monitorS = m;}
+    public void setMonitorM(MyMonitor m)    {monitorM = m;}
+    public void setBarrier(CyclicBarrier ba)    {barrier = ba;}
+    
+    
 
-    public SupplierThread(String name, List<Warehouse> warehouses,
-                          int minSupply, int maxSupply, int days, DaySynchronizer sync) {
+    public SupplierThread(String name, ArrayList<Warehouse> warehouses,
+                          int minSupply, int maxSupply, int days ) {
         super(name);
         this.warehouses = warehouses;
         this.minSupply = minSupply;
         this.maxSupply = maxSupply;
         this.days = days;
-        this.sync = sync;
+        
     }
 
     @Override
     public void run() {
         for (int day = 1; day <= days; day++) {
             try {
-                sync.awaitStart();
-
+                monitorM.waitForThreads();
+//
                 int amount = minSupply + rng.nextInt(maxSupply - minSupply + 1);
                 Warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
                 w.put(amount);
                 System.out.printf("%s >> put %d materials\t %s balance = %d%n",
                         getName(), amount, w.getName(), w.getBalance());
-
-                sync.awaitAfterSuppliers();
-                sync.awaitAfterShipping();
+//
+                int c = -1;
+                try{c = barrier.await();}catch(Exception e){}
+                if(c==0)
+                {
+                    monitorM.wakeUpThreads();
+                }
             } catch (Exception e) {
                 System.out.printf("%s >> interrupted/broken at day %d%n", getName(), day);
                 return;
