@@ -13,6 +13,8 @@ public class main {
     private MyMonitor monitorS, monitorM;
 
     public void runSimulaion() {
+        monitorS = new MyMonitor();
+        monitorM = new MyMonitor();
         ArrayList<Integer> data = new ArrayList<>();
         String path = "src/main/java/GPRO2JAVA/";
    Scanner sc = new Scanner(System.in);
@@ -62,22 +64,31 @@ public class main {
         for (int i = 0; i < configDetail.getSupplier()[0]; i++) {
 
             SupplierThread a = new SupplierThread("SupplierThread_" + i, warehouses,
-                    configDetail.getSupplier()[1], configDetail.getSupplier()[2], configDetail.getDay());
+                    configDetail.getSupplier()[1], configDetail.getSupplier()[2], configDetail.getDay(), monitorS, monitorM);
             a.setMonitorS(monitorS);
             a.setMonitorM(monitorM);
             a.start();
             suppliers.add(a);
 
         }
+        for(int i = 0; i < suppliers.size(); i++)
+        {
+            suppliers.get(i).setMonitorS(monitorS);
+            suppliers.get(i).setMonitorM(monitorS);
+        }
         for (int i = 0; i < configDetail.getFactory()[0]; i++) {
 
-            FactoryThread a = new FactoryThread("FactoryThread_" + i, configDetail.getDay(), configDetail.getFactory()[1]);
+            FactoryThread a = new FactoryThread("FactoryThread_" + i, configDetail.getDay(), configDetail.getFactory()[1], monitorS, monitorM);
             a.setMonitorS(monitorS);
             a.setMonitorM(monitorM);
             a.start();
             factories.add(a);
         }
-
+        for(int i = 0; i < factories.size(); i++)
+        {
+            factories.get(i).setMonitorS(monitorS);
+            factories.get(i).setMonitorM(monitorS);
+        }
         for (int j = 0; j < configDetail.getDay(); j++) {
 
             System.out.println("main >> DAY " + j + 1);
