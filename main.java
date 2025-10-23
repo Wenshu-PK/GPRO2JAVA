@@ -14,20 +14,34 @@ public class main {
 
     public void runSimulaion() {
         ArrayList<Integer> data = new ArrayList<>();
-        String filePath = "src/main/java/Project2_6713249/Config.java";
+        String path = "src/main/java/GPRO2JAVA/";
+   Scanner sc = new Scanner(System.in);
+   System.out.println("New file name =");
+   String file = sc.nextLine().trim();
+ 
+      
 
-        Scanner scan_file = new Scanner(filePath);
-        try {
-            while (scan_file.hasNext()) {
-                if (scan_file.hasNextInt()) {
-                    data.add(scan_file.nextInt());
-                } else {
-                    scan_file.next();
+      try {
+            Scanner br = new Scanner(new File(path+file));
+
+            while (br.hasNextLine()) {
+                String line = br.nextLine();
+                String[] parts = line.split(",");  
+
+                for (String part : parts) {
+                    part = part.trim();            
+                    try {
+                        int num = Integer.parseInt(part);
+                        data.add(num);
+                    } catch (NumberFormatException e) {
+                        
+                    }
                 }
             }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+      br.close();
+      }catch(Exception e){}
+
+            
         configDetail = new config(data);
 
         ////////// create thread ////////////////
@@ -74,7 +88,7 @@ public class main {
 
     }
 
-    public static void main() {
+    public static void main(String[] args) {
         main app = new main();
         app.runSimulaion();
 
