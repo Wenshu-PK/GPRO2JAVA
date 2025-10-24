@@ -1,3 +1,4 @@
+
 package GPRO2JAVA;
 
 import java.io.*;
@@ -22,6 +23,7 @@ public class main {
         ArrayList<String> fre = new ArrayList<>();
         ArrayList<String> sup = new ArrayList<>();
         ArrayList<String> fac = new ArrayList<>();
+        String space = "            ";
         String path = "src/main/java/GPRO2JAVA/";
         Scanner sc = new Scanner(System.in);
 
@@ -50,7 +52,6 @@ public class main {
             }
         }
         configDetail = new config(data);
-        
 
         ////////// create thread ////////////////
         for (int i = 0; i < configDetail.getWarehouse(); i++) {
@@ -100,27 +101,33 @@ public class main {
             factories.get(i).start();
         }
         ////////print  config data //////////////
-        System.out.println("================= Parameters =================");
-        System.out.printf("Days of simulation : %2d\n",configDetail.getDay());
-        System.out.print("Warehouses         : ");
+        System.out.printf("%smain  >>  ================= Parameters =================\n",space);
+        System.out.printf("%smain  >>  Days of simulation : %2d\n",space, configDetail.getDay());
+        System.out.printf("%smain  >>  Warehouses         : ",space);
         System.out.println(war);
-        System.out.printf("Freights           : ");
+        System.out.printf("%smain  >>  Freights           : ",space);
         System.out.println(fre);
-        System.out.printf("Freight capacity   : max = %3d\n",configDetail.getFreight()[1]);
-        System.out.printf("SupplierThreads    : ");
+        System.out.printf("%smain  >>  Freight capacity   : max = %3d\n",space, configDetail.getFreight()[1]);
+        System.out.printf("%smain  >>  SupplierThreads    : ",space);
         System.out.println(sup);
-        System.out.printf("Daily supply       : min = %3d, max = %3d\n",configDetail.getSupplier()[1],configDetail.getSupplier()[2]);
-        System.out.printf("FactoryThreads     : ");
+        System.out.printf("%smain  >>  Daily supply       : min = %3d, max = %3d\n",space, configDetail.getSupplier()[1], configDetail.getSupplier()[2]);
+        System.out.printf("%smain  >>  FactoryThreads     : ",space);
         System.out.println(fac);
-        System.out.printf("Daily production   : max = %3d\n",configDetail.getFactory()[1]);
-        
-        
+        System.out.printf("%smain  >>  Daily production   : max = %3d\n",space, configDetail.getFactory()[1]);
+
         for (int j = 1; j <= configDetail.getDay(); j++) {
+            System.out.printf("%smain  >>  ==============================================\n",space);
+            System.out.printf("%smain >> DAY %d\n" ,space,j);
+            
+            for (int i = 0; i < warehouses.size(); i++) {
+
+                System.out.printf("%smain >> %5s balance = %3d \n",space,warehouses.get(i).getName(),warehouses.get(i).getBalance());
+            }
 
             for (int i = 0; i < freights.size(); i++) {
                 freights.get(i).reset();
+                System.out.printf("%smain >> Freight_%d   capacity = 100 \n",space,j+1);
             }
-            System.out.println("main >> DAY " + j);
 
             monitorS.wakeUpThreads();
             monitorM.waitForThreads();
