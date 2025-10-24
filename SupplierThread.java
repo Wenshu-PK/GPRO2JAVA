@@ -15,10 +15,10 @@ public class SupplierThread extends Thread {
     private int maxSupply;
     private int days;
     private CyclicBarrier barrier;
-    private MyMonitor monitorS, monitorM;
+    private MyMonitor monitorS, monitorF;
     private Random rng = new Random();
     public void setMonitorS(MyMonitor m)   {monitorS = m;}
-    public void setMonitorM(MyMonitor m)    {monitorM = m;}
+    public void setMonitorF(MyMonitor m)    {monitorF = m;}
     public void setBarrier(CyclicBarrier ba)    {barrier = ba;}
     
     
@@ -31,13 +31,14 @@ public class SupplierThread extends Thread {
         this.maxSupply = maxSupply;
         this.days = days;
         
+        
     }
 
     @Override
     public void run() {
         for (int day = 1; day <= days; day++) {
             try {
-                monitorM.waitForThreads();
+                monitorS.waitForThreads();
 //
                 int amount = minSupply + rng.nextInt(maxSupply - minSupply + 1);
                 warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
@@ -49,7 +50,7 @@ public class SupplierThread extends Thread {
                 try{c = barrier.await();}catch(Exception e){}
                 if(c==0)
                 {
-                    monitorM.wakeUpThreads();
+                    monitorF.wakeUpThreads();
                 }
             } catch (Exception e) {
                 System.out.printf("%s >> interrupted/broken at day %d%n", getName(), day);

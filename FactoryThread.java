@@ -1,17 +1,18 @@
-
 package GPRO2JAVA;
 
 import java.util.*;
 import java.util.concurrent.*;
+
 /**
  *
  * @author iamja
  */
-public class FactoryThread extends Thread{
+public class FactoryThread extends Thread {
+
     private int maxProduction;
     private int products;
     private CyclicBarrier barrier;
-    private MyMonitor monitorS, monitorM;
+    private MyMonitor monitorF, monitorM;
     private int totalProducts;
     private int unshipped;
     private ArrayList<warehouse> warehouses;
@@ -19,74 +20,102 @@ public class FactoryThread extends Thread{
     private int days;
     private int allProduced;
     private int allShipped;
-    public FactoryThread(String n, int d, int max)   {super(n); days = d; maxProduction = max;  }
-    public void setMonitorS(MyMonitor m)   {monitorS = m;}
-    public void setMonitorM(MyMonitor m)    {monitorM = m;}
-    public void setBarrier(CyclicBarrier ba)    {barrier = ba;}
-    public void setWarehouses(ArrayList<warehouse> w)   {warehouses = w;}
-    public void setFreights(ArrayList<freight> f)   {freights = f;}
+
+    public FactoryThread(String n, int d, int max) {
+        super(n);
+        this.days = d;
+        this.maxProduction = max;
+    }
+
+    public void setMonitorF(MyMonitor m) {
+        this.monitorF = m;
+    }
+
+    public void setMonitorM(MyMonitor m) {
+        this.monitorM = m;
+    }
+
+    public void setBarrier(CyclicBarrier ba) {
+        this.barrier = ba;
+    }
+
+    public void setWarehouses(ArrayList<warehouse> w) {
+        this.warehouses = w;
+    }
+
+    public void setFreights(ArrayList<freight> f) {
+        this.freights = f;
+    }
+
     @Override
-    public void run()
-    {
-        while(true){
-            monitorS.waitForThreads();
+    public void run() {
+        while (true) {
+            monitorF.waitForThreads();
             Random rand = new Random();
-            int selectw = rand.nextInt(0, warehouses.size()-1);
-            int selectf = rand.nextInt(0, freights.size()-1);
-            products = rand.nextInt(1, maxProduction);
+            int selectw = rand.nextInt(0, warehouses.size() - 1);
+            int selectf = rand.nextInt(0, freights.size() - 1);
+            products = maxProduction;
             products = warehouses.get(selectw).get(products);
             getMats(selectw);
             allProduced += products;
-            int c =-1;
-            try{c = barrier.await();}catch(Exception e){}
-            if(c==0)
-            {
-                System.out.println(Thread.currentThread().getName() + ">>");
+            int c = -1;
+            try {
+                c = barrier.await();
+            } catch (Exception e) {
+            }
+            if (c == 0) {
+                System.out.println(Thread.currentThread().getName() + "  >>");
+            }
+            try {
+                c = barrier.await();
+            } catch (Exception e) {
             }
             totalProducts = unshipped + products;
             totalToShip();
-            try{barrier.await();}catch(Exception e){}
+            try {
+                barrier.await();
+            } catch (Exception e) {
+            }
             shippingProduct(selectf);
-            try{barrier.await();}catch(Exception e){}
+            try {
+                barrier.await();
+            } catch (Exception e) {
+            }
             unshippedProducts();
             days--;
             c = -1;
-            try{c = barrier.await();}catch(Exception e){}
-            if(c==0)
-            {
+            try {
+                c = barrier.await();
+            } catch (Exception e) {
+            }
+            if (c == 0) {
                 monitorM.wakeUpThreads();
             }
-            if(days == 1){
+            if (days == 0) {
                 monitorM.waitForThreads();
                 break;
             }
         }
-            
-        
-        
-        
-            
-        
+
     }
-    public void getMats(int s)
-    {
-        System.out.printf("%s  >>  get %3d materials      %s balance = %5d\n",Thread.currentThread().getName(), products, warehouses.get(s).getName(), warehouses.get(s).getBalance());
+
+    public void getMats(int s) {
+        System.out.printf("%s  >>  get %3d materials      %s balance = %5d\n", Thread.currentThread().getName(), products, warehouses.get(s).getName(), warehouses.get(s).getBalance());
     }
-    public void totalToShip()
-    {
+
+    public void totalToShip() {
         System.out.printf("%s  >>  total product to ship = %5d\n", Thread.currentThread().getName(), totalProducts);
     }
-    public void shippingProduct(int s)
-    {
+
+    public void shippingProduct(int s) {
         int shipped = freights.get(s).ship(totalProducts);
         int remain = totalProducts - shipped;
         allShipped += shipped;
         System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).getRemaining());
         unshipped = remain;
     }
-    public void unshippedProducts()
-    {
+
+    public void unshippedProducts() {
         System.out.printf("%s  >>  unshipped products = %5d\n", Thread.currentThread().getName(), unshipped);
     }
 }
-
