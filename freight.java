@@ -19,6 +19,7 @@ public class freight {
             return 0;
         int shipped = Math.min(request, freight_rem);
         freight_rem -= shipped;
+        System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, getName(), this.freight_rem);
         return shipped;
     }
 

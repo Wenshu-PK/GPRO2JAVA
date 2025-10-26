@@ -56,7 +56,7 @@ public class FactoryThread extends Thread {
             int selectf = rand.nextInt(0, freights.size() - 1);
             products = maxProduction;
             products = warehouses.get(selectw).get(products);
-            getMats(selectw);
+            //getMats(selectw);
             allProduced += products;
             int c = -1;
             try {
@@ -92,18 +92,18 @@ public class FactoryThread extends Thread {
                 monitorM.wakeUpThreads();
             }
             if (days == 0) {
-                monitorM.waitForThreads();
+                
                 break;
             }
         }
 
     }
 
-    public void getMats(int s) {
+    /*public void getMats(int s) {
         System.out.printf("%s  >>  get %3d materials      %s balance = %5d\n", Thread.currentThread().getName(), products, warehouses.get(s).getName(), warehouses.get(s).getBalance());
-    }
+    }*/
 
-    public void totalToShip() {
+    public synchronized void totalToShip() {
         System.out.printf("%s  >>  total product to ship = %5d\n", Thread.currentThread().getName(), totalProducts);
     }
 
@@ -111,11 +111,11 @@ public class FactoryThread extends Thread {
         int shipped = freights.get(s).ship(totalProducts);
         int remain = totalProducts - shipped;
         allShipped += shipped;
-        System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).getRemaining());
+        //System.out.printf("%s  >>  ship %4d products      %s remaining capacity = %5d\n", Thread.currentThread().getName(), shipped, freights.get(s).getName(), freights.get(s).getRemaining());
         unshipped = remain;
     }
 
-    public void unshippedProducts() {
+    public synchronized void unshippedProducts() {
         System.out.printf("%s  >>  unshipped products = %5d\n", Thread.currentThread().getName(), unshipped);
     }
 }

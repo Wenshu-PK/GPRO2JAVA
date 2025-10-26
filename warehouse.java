@@ -32,6 +32,7 @@ public class warehouse {
         if (maxNeeded <= 0) return 0;
         int taken = Math.min(maxNeeded, this.balance);
         this.balance -= taken;
+        System.out.printf("%s  >>  get %3d materials      %s balance = %5d\n", Thread.currentThread().getName(), taken, this.name, this.balance);
         return taken;
     }
 
@@ -43,4 +44,5 @@ public class warehouse {
     public String getName() {
         return this.name;
     }
+    
 }
