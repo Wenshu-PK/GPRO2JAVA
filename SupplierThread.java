@@ -35,27 +35,37 @@ public class SupplierThread extends Thread {
     }
 
     @Override
-    public void run() {
-        for (int day = 1; day <= days; day++) {
-            try {
-                monitorS.waitForThreads();
-//
-                int amount = minSupply + rng.nextInt(maxSupply - minSupply + 1);
-                warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
+public void run() {
+    for (int day = 1; day <= days; day++) {
+        try {
+            monitorS.waitForThreads();
+
+            int amount = minSupply + rng.nextInt(maxSupply - minSupply + 1);
+            warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
+            synchronized (w) {
                 w.put(amount);
                 System.out.printf("%s >> put %d materials\t %s balance = %d%n",
-                        getName(), amount, w.getName(), w.getBalance());
-//
-                int c = -1;
-                try{c = barrier.await();}catch(Exception e){}
-                if(c==0)
-                {
+                getName(), amount, w.getName(), w.getBalance());
+            }
+            try {
+                int c = barrier.await();
+                if (c == 0) {
                     monitorF.wakeUpThreads();
                 }
-            } catch (Exception e) {
-                System.out.printf("%s >> interrupted/broken at day %d%n", getName(), day);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                System.err.println(getName() + " interrupted at barrier");
+                return;
+            } catch (BrokenBarrierException be) {
+                System.err.println(getName() + " barrier broken: " + be.getMessage());
                 return;
             }
+        } catch (Exception e) {
+            System.out.printf("%s >> interrupted/broken at day %d: %s%n", getName(), day, e.toString());
+            Thread.currentThread().interrupt();
+            return;
         }
     }
+}
+
 }
