@@ -126,7 +126,8 @@ public class main {
 
             for (int i = 0; i < freights.size(); i++) {
                 freights.get(i).reset();
-                System.out.printf("%smain >> Freight_%d   capacity = 100 \n",space,j+1);
+                System.out.printf("%smain >> Freight_%d   capacity = %d \n",space,j+1, freights.get(i).getCapacity());
+                //"j+1" can use "freights.get(i).getName()"
             }
 
             monitorS.wakeUpThreads();
@@ -143,3 +144,4 @@ public class main {
     }
 
 }
+
