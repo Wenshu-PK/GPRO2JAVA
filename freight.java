@@ -15,8 +15,6 @@ public class freight {
     
     //Monitor Method Ship
     public synchronized int ship(int request){
-        if (request <= 0)
-            return 0;
         int shipped;
         if (request <= freight_rem){
         shipped = request;

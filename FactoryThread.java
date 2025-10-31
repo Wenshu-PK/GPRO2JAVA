@@ -118,4 +118,10 @@ public class FactoryThread extends Thread {
     public synchronized void unshippedProducts() {
         System.out.printf("%s  >>  unshipped products = %5d\n", Thread.currentThread().getName(), unshipped);
     }
+    public void printSummary(){
+        double p = allProduced;
+        double s = allShipped;
+        double percent = ( s / p ) * 100.0;
+        System.out.printf("            %s >> %s    total products = %4d   shipped = %4d ( %4.2f )\n", Thread.currentThread().getName(), this.getName(), allProduced, allShipped, percent);
+    }
 }

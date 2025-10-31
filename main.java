@@ -14,7 +14,7 @@ public class main {
     protected ArrayList<FactoryThread> factories = new ArrayList<>();
     private MyMonitor monitorS, monitorM, monitorF;
 
-    public void runSimulaion() {
+    public void runSimulaion() throws InterruptedException {
         monitorS = new MyMonitor();
         monitorM = new MyMonitor();
         monitorF = new MyMonitor();
@@ -49,6 +49,7 @@ public class main {
                 }
                 br.close();
             } catch (Exception e) {
+                System.out.println(e);
             }
         }
         configDetail = new config(data);
@@ -134,12 +135,23 @@ public class main {
             monitorM.waitForThreads();
 
         }
+        for(int i = 0; i < suppliers.size(); i++)
+        {
+           suppliers.get(i).join();
+            
+        }
+        for(int i = 0; i < factories.size(); i++)
+        {
+            factories.get(i).printSummary();
+            factories.get(i).join();
+        }
+        
 
     }
 
     public static void main(String[] args) {
         main app = new main();
-        app.runSimulaion();
+        try{app.runSimulaion();} catch(Exception e){}
 
     }
 
