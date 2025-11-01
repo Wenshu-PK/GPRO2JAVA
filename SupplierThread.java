@@ -1,4 +1,4 @@
-package Project2_6713249
+package Project2_6713249;
 
 //Anun Luechaphongthip         6713253
 //Puvit Kitiwongpaisan         6713246
@@ -74,5 +74,6 @@ public void run() {
 }
 
 }
+
 
 
