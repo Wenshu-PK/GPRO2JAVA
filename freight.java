@@ -39,10 +39,10 @@ public class freight {
     // Helpers
     public synchronized int getRemaining() { return freight_rem; }
     public int getCapacity() { return freight_cap; }
-    public String getName() { return "Freight-" + freight_num; }
+    public String getName() { return "Freight_" + freight_num; }
 
     @Override
     public synchronized String toString() {
-        return "Freight-" + freight_num + " [" + freight_rem + "/" + freight_cap + "]";
+        return "Freight_" + freight_num + " [" + freight_rem + "/" + freight_cap + "]";
     }
 }
