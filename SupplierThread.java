@@ -44,7 +44,7 @@ public void run() {
             warehouse w = warehouses.get(rng.nextInt(warehouses.size()));
             synchronized (w) {
                 w.put(amount);
-                System.out.printf("%s >> put %d materials\t %s balance = %d%n",
+                System.out.printf("%s >>  put %d materials\t %s balance = %d%n",
                 getName(), amount, w.getName(), w.getBalance());
             }
             try {
@@ -61,7 +61,7 @@ public void run() {
                 return;
             }
         } catch (Exception e) {
-            System.out.printf("%s >> interrupted/broken at day %d: %s%n", getName(), day, e.toString());
+            System.out.printf("%s >>  interrupted/broken at day %d: %s%n", getName(), day, e.toString());
             Thread.currentThread().interrupt();
             return;
         }
@@ -69,3 +69,4 @@ public void run() {
 }
 
 }
+
