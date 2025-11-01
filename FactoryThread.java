@@ -52,8 +52,8 @@ public class FactoryThread extends Thread {
         while (true) {
             monitorF.waitForThreads();
             Random rand = new Random();
-            int selectw = rand.nextInt(0, warehouses.size() - 1);
-            int selectf = rand.nextInt(0, freights.size() - 1);
+            int selectw = rand.nextInt( warehouses.size());
+            int selectf = rand.nextInt( freights.size());
             products = maxProduction;
             products = warehouses.get(selectw).get(products);
             //getMats(selectw);
@@ -122,6 +122,7 @@ public class FactoryThread extends Thread {
         double p = allProduced;
         double s = allShipped;
         double percent = ( s / p ) * 100.0;
-        System.out.printf("            %s >> %s    total products = %4d   shipped = %4d ( %4.2f )\n", Thread.currentThread().getName(), this.getName(), allProduced, allShipped, percent);
+        System.out.printf("            %s >>  %s    total products = %4d   shipped = %4d ( %4.2f )\n", Thread.currentThread().getName(), this.getName(), allProduced, allShipped, percent);
     }
 }
+
