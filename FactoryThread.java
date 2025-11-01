@@ -1,4 +1,4 @@
-package Project2_6713249
+package Project2_6713249;
 
 //Anun Luechaphongthip         6713253
 //Puvit Kitiwongpaisan         6713246
@@ -131,5 +131,6 @@ public class FactoryThread extends Thread {
         System.out.printf("            %s >>  %s    total products = %4d   shipped = %4d ( %4.2f )\n", Thread.currentThread().getName(), this.getName(), allProduced, allShipped, percent);
     }
 }
+
 
 
