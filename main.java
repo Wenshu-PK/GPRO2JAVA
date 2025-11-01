@@ -134,7 +134,6 @@ public class main {
             for (int i = 0; i < freights.size(); i++) {
                 freights.get(i).reset();
                 System.out.printf("%smain >>  %s   capacity = %d \n",space,freights.get(i).getName(), freights.get(i).getCapacity());
-                //"j+1" can use "freights.get(i).getName()"
             }
             System.out.printf("%smain >> \n",space);
 
@@ -166,5 +165,6 @@ public class main {
     }
 
 }
+
 
 
