@@ -102,34 +102,36 @@ public class main {
             factories.get(i).start();
         }
         ////////print  config data //////////////
-        System.out.printf("%smain  >>  ================= Parameters =================\n",space);
-        System.out.printf("%smain  >>  Days of simulation : %2d\n",space, configDetail.getDay());
-        System.out.printf("%smain  >>  Warehouses         : ",space);
+        System.out.printf("%smain >>  ================= Parameters =================\n",space);
+        System.out.printf("%smain >>  Days of simulation : %2d\n",space, configDetail.getDay());
+        System.out.printf("%smain >>  Warehouses         : ",space);
         System.out.println(war);
-        System.out.printf("%smain  >>  Freights           : ",space);
+        System.out.printf("%smain >>  Freights           : ",space);
         System.out.println(fre);
-        System.out.printf("%smain  >>  Freight capacity   : max = %3d\n",space, configDetail.getFreight()[1]);
-        System.out.printf("%smain  >>  SupplierThreads    : ",space);
+        System.out.printf("%smain >>  Freight capacity   : max = %3d\n",space, configDetail.getFreight()[1]);
+        System.out.printf("%smain >>  SupplierThreads    : ",space);
         System.out.println(sup);
-        System.out.printf("%smain  >>  Daily supply       : min = %3d, max = %3d\n",space, configDetail.getSupplier()[1], configDetail.getSupplier()[2]);
-        System.out.printf("%smain  >>  FactoryThreads     : ",space);
+        System.out.printf("%smain >>  Daily supply       : min = %3d, max = %3d\n",space, configDetail.getSupplier()[1], configDetail.getSupplier()[2]);
+        System.out.printf("%smain >>  FactoryThreads     : ",space);
         System.out.println(fac);
-        System.out.printf("%smain  >>  Daily production   : max = %3d\n",space, configDetail.getFactory()[1]);
+        System.out.printf("%smain >>  Daily production   : max = %3d\n",space, configDetail.getFactory()[1]);
 
         for (int j = 1; j <= configDetail.getDay(); j++) {
-            System.out.printf("%smain  >>  ==============================================\n",space);
-            System.out.printf("%smain >> DAY %d\n" ,space,j);
+            System.out.printf("%smain >> \n",space);
+            System.out.printf("%smain >>  ==============================================\n",space);
+            System.out.printf("%smain >>  DAY %d\n" ,space,j);
             
             for (int i = 0; i < warehouses.size(); i++) {
 
-                System.out.printf("%smain >> %5s balance = %3d \n",space,warehouses.get(i).getName(),warehouses.get(i).getBalance());
+                System.out.printf("%smain >>  %5s balance = %3d \n",space,warehouses.get(i).getName(),warehouses.get(i).getBalance());
             }
 
             for (int i = 0; i < freights.size(); i++) {
                 freights.get(i).reset();
-                System.out.printf("%smain >> Freight_%d   capacity = %d \n",space,j+1, freights.get(i).getCapacity());
+                System.out.printf("%smain >>  %s   capacity = %d \n",space,freights.get(i).getName(), freights.get(i).getCapacity());
                 //"j+1" can use "freights.get(i).getName()"
             }
+            System.out.printf("%smain >> \n",space);
 
             monitorS.wakeUpThreads();
             monitorM.waitForThreads();
@@ -140,6 +142,9 @@ public class main {
            suppliers.get(i).join();
             
         }
+        System.out.printf("%smain >> \n",space);
+        System.out.printf("%smain >>  ==============================================\n",space);
+        System.out.printf("%smain >>  Summary\n",space);
         for(int i = 0; i < factories.size(); i++)
         {
             factories.get(i).printSummary();
